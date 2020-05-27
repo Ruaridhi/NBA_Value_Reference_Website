@@ -44,6 +44,21 @@ namespace NbaPlayerValueApp.Controllers
                 return response;
         }
 
+        [HttpGet("{teamAbb}/{year}")]
+        public async Task<List<YearRecord>> Get(string teamAbb, int year)
+        {
+            HttpClient httpClient = new HttpClient();
+            httpClient.BaseAddress = new Uri("https://nba-tester.firebaseio.com/");
+            var url = ".json?orderBy=\"team_abbreviation\"&equalTo=\"" + teamAbb + "&orderBy=\"year\"&equalTo=" + year;
+            var responseTask = httpClient.GetAsync(url);
+            responseTask.Wait();
+
+            List<YearRecord> response = await GetFinalResponse(responseTask);
+
+            return response;
+        }
+
+
         private async Task<List<YearRecord>> GetFinalResponse(Task<HttpResponseMessage> responseTask) 
         {
             var result = await responseTask;
