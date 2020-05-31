@@ -9,7 +9,6 @@ using NbaPlayerValueApp.Models;
 
 namespace NbaPlayerValueApp.Controllers
 {
-    [EnableCors(origins: "http://localhost:3000", headers: "*", methods: "*")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
