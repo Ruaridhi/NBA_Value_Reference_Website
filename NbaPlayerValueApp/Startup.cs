@@ -58,7 +58,7 @@ namespace NbaPlayerValueApp
 
             app.UseAuthorization();
 
-            app.UseCors();
+            app.UseCors(MyAllowSpecificOrigins);
 
             app.UseEndpoints(endpoints =>
             {
