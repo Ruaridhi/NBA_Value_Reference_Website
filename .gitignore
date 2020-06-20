@@ -1,1 +1,8 @@
+# Build results
+NbaPlayerValueApp/bin
+NbaPlayerValueApp/obj/
+
+# Visual Studio 2015
 .vs/
+
+.idea/
