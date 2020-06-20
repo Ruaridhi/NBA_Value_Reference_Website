@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NbaPlayerValueApp.Models;
 using Newtonsoft.Json;
+// using Newtonsoft.Json.Linq.JObject;
 
 namespace NbaPlayerValueApp.Controllers
 {
@@ -16,14 +17,14 @@ namespace NbaPlayerValueApp.Controllers
     {
 
         [HttpGet]
-        public async Task<List<YearRecord>> Get()
+        public async Task<IndividualPlayerRecord> Get()
         {
             HttpClient httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("https://nba-tester.firebaseio.com/");
             var responseTask = httpClient.GetAsync(".json");
             responseTask.Wait();
 
-            List<YearRecord> response = await GetFinalResponse(responseTask);
+            IndividualPlayerRecord response = await GetFinalResponse(responseTask);
 
             return response;
 
@@ -31,7 +32,7 @@ namespace NbaPlayerValueApp.Controllers
         }
 
         [HttpGet("{playerId}")]
-        public async Task<List<YearRecord>> Get(string playerId)
+        public async Task<IndividualPlayerRecord> Get(string playerId)
         {
             HttpClient httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("https://nba-tester.firebaseio.com/");
@@ -39,13 +40,13 @@ namespace NbaPlayerValueApp.Controllers
             var responseTask = httpClient.GetAsync(url);
             responseTask.Wait();
 
-            List<YearRecord> response = await GetFinalResponse(responseTask);
+            IndividualPlayerRecord response = await GetFinalResponse(responseTask);
 
                 return response;
         }
 
         [HttpGet("{teamAbb}/{year}")]
-        public async Task<List<YearRecord>> Get(string teamAbb, int year)
+        public async Task<IndividualPlayerRecord> Get(string teamAbb, int year)
         {
             HttpClient httpClient = new HttpClient();
             httpClient.BaseAddress = new Uri("https://nba-tester.firebaseio.com/");
@@ -53,25 +54,29 @@ namespace NbaPlayerValueApp.Controllers
             var responseTask = httpClient.GetAsync(url);
             responseTask.Wait();
 
-            List<YearRecord> response = await GetFinalResponse(responseTask);
+            IndividualPlayerRecord response = await GetFinalResponse(responseTask);
 
             return response;
         }
 
 
-        private async Task<List<YearRecord>> GetFinalResponse(Task<HttpResponseMessage> responseTask) 
+        private async Task<IndividualPlayerRecord> GetFinalResponse(Task<HttpResponseMessage> responseTask) 
         {
             var result = await responseTask;
-            List<YearRecord> finalResponse = new List<YearRecord>();
+            IndividualPlayerRecord finalResponse = new IndividualPlayerRecord();
             if (result.IsSuccessStatusCode)
             {
-
                 string responseBody = await result.Content.ReadAsStringAsync();
-                Dictionary<string, YearRecord> initialResponse = JsonConvert.DeserializeObject<Dictionary<string, YearRecord>>(responseBody);
-                foreach (KeyValuePair<string, YearRecord> entry in initialResponse)
-                {
-                    finalResponse.Add(entry.Value);
-                }
+                var searchResults = JsonConvert.DeserializeObject<IndividualPlayerRecord>(responseBody);
+                Console.WriteLine(searchResults);
+                // JObject json = JObject.Parse(responseBody);
+                // finalResponse.name = json.name;
+
+                // Dictionary<string, IndividualPlayerRecord> initialResponse = JsonConvert.DeserializeObject<Dictionary<string, IndividualPlayerRecord>>(responseBody);
+                // foreach (KeyValuePair<string, IndividualPlayerRecord> entry in initialResponse)
+                // {
+                //     finalResponse.Add(entry.Value);
+                // }
             }
             else //web api sent error response 
             {
