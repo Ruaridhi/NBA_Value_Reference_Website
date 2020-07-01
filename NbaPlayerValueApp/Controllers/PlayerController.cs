@@ -26,11 +26,12 @@ namespace NbaPlayerValueApp.Controllers
 
             IndividualPlayerRecord response = await GetFinalResponse(responseTask);
 
-            return response;
+        //     List<YearRecord> response = await GetFinalResponse(responseTask);
 
-     
-        }
+        //     return response;
+        // }
 
+        // GET REGULAR SEASON PLAYER DATA
         [HttpGet("{playerId}")]
         public async Task<IndividualPlayerRecord> Get(string playerId)
         {
@@ -42,7 +43,20 @@ namespace NbaPlayerValueApp.Controllers
 
             IndividualPlayerRecord response = await GetFinalResponse(responseTask);
 
-                return response;
+                string responseBody = await result.Content.ReadAsStringAsync();
+                Dictionary<string, RSFullFirebaseModel> initialResponse = JsonConvert.DeserializeObject<Dictionary<string, RSFullFirebaseModel>>(responseBody);
+                bool isfirstEntry = true;
+                foreach (KeyValuePair<string, RSFullFirebaseModel> entry in initialResponse)
+                {
+                    if (isfirstEntry) {
+                        finalResponse.name = entry.Value.name;
+                        isfirstEntry = false;
+                    }
+                }
+            }
+            else //web api sent error response 
+            { }
+            return finalResponse;
         }
 
         [HttpGet("{teamAbb}/{year}")]
@@ -56,8 +70,8 @@ namespace NbaPlayerValueApp.Controllers
 
             IndividualPlayerRecord response = await GetFinalResponse(responseTask);
 
-            return response;
-        }
+        //     return response;
+        // }
 
 
         private async Task<IndividualPlayerRecord> GetFinalResponse(Task<HttpResponseMessage> responseTask) 
